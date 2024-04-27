@@ -1,0 +1,297 @@
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200px; /* Ajusta el ancho de acuerdo a tus necesidades */
+  height: 100vh; /* Opcional: establece la altura al 100% de la ventana */
+  background-color: #f0f0f0; /* Color de fondo de la barra lateral */
+  z-index: 1000; /* Asegura que la barra lateral esté encima del contenido */
+}
+
+.courses{
+  overflow-y: auto;
+  height: 100vh;
+  width: 100%;
+  padding-right: 10px;
+}
+
+.selectCourse{
+  width: 5px;
+  height: 100px;
+  cursor: pointer;
+}
+
+.coursesCont{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.maincontainer{
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+
+
+#nuevatarea{
+  border-top: 1px solid #000;
+  padding-top: 20px;
+  font-size: 25px;
+}
+
+.textfields{
+  display: flex;
+  flex-direction: column;
+}
+
+.languages{
+  margin-top: 20vh;
+  margin-left: 40vh;
+}
+
+.languages > h3{
+  font-size: 25px;
+}
+
+.nextButton{
+  margin-top: 25vh;
+}
+
+.content{
+  display: flex;
+  flex-direction: column;
+}
+
+.tareaContainer{
+  display: flex;
+  flex-direction: row;
+}
+
+.tareaContainerL{
+  display: flex;
+  flex-direction: column;
+  padding-right: 10vh;
+  width: 100%;
+}
+
+.filesComp {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 300px;
+  height: 150px;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #d9d9d9;
+  margin-right: 30px;
+  margin-bottom: 30px;
+}
+
+.custom-button-class{
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.filesComp > p{
+  align-self: flex-start;
+  margin: 0;
+  color: #545454;
+  font: 70 12px League Spartan, -apple-system, Roboto, Helvetica,
+    sans-serif;;
+}
+
+.filesComp > .content {
+  display: flex;
+  flex-direction: column;
+  padding-top: 35px;
+  align-items: center; /* Centra los elementos en el eje horizontal */
+  flex-grow: 1; /* Permite que el contenido crezca para ocupar todo el espacio disponible */
+}
+
+.filesComp >.content >img{
+  opacity:0.5;
+  width: 10vh;
+}
+
+.filesContainer{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+h2{
+  font: 70 20px League-Spartan, -apple-system, Roboto, Helvetica,
+  sans-serif;;
+  color: #000;
+}
+
+.pruebasContainer{
+  margin-top: 40px;
+}
+
+.title{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.custom-button-class{
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 20px;
+  font: 16px League Spartan, -apple-system, Roboto, Helvetica,
+  sans-serif;
+  margin-bottom: 20px;
+}
+
+.custom-button-class > img{
+  width: 30px;
+  height: auto;
+  margin-right: 15px;
+}
+
+.custom-button-class:hover{
+  background-color: #c4c4c4;
+}
+
+.custom-panel-class{
+  height: auto;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  font: 16px League Spartan, -apple-system, Roboto, Helvetica,
+  sans-serif;
+}
+
+.nextButton{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 80px;
+}
+
+.contPrev{
+  padding-left: 30px;
+  padding-right: 40px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: 100vh;
+  width: 100%;
+}
+
+.button{
+  align-self: flex-end;
+  margin-bottom: 20px;
+}
+
+h1{
+  font: 600 20px League Spartan, -apple-system, Roboto, Helvetica,
+  sans-serif;
+}
+
+.textcontainer{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  color: #000;
+  background-color: #dfdfdf;
+  border-radius: 10px;
+  padding: 10px;
+  width: calc(100%-100px);
+  height: auto;
+  font: 400 15px League Spartan, -apple-system, Roboto, Helvetica,
+  sans-serif;
+}
+
+.actContainer{
+  display: flex;
+  flex-direction: column !important;
+  border-radius: 10px;
+  padding-top: 20px;
+  padding-left: 20px;
+  width: 50vh;
+  height: 20vh;
+  font: 600 20px League Spartan, -apple-system, Roboto, Helvetica,
+  sans-serif;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background-color: #c4c4c4;
+  margin-right: 30px;
+  margin-bottom: 30px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.courseCont{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.usuario{
+  display: flex;
+  align-items: center;
+  width: 40vh;
+  margin-bottom: 3vh;
+  border-radius: 5px;
+  font: 500 15px League Spartan, -apple-system, Roboto, Helvetica;
+}
+
+.userimage{
+  margin-right: 10px;
+}
+
+.userimage > img{
+  width: 5vh;
+}
+
+.courseContainer{
+  font: 600 15px League Spartan, -apple-system, Roboto, Helvetica,
+  sans-serif;
+  color: #545454;
+  margin-top: 5px;
+  text-decoration: none !important;
+}
+.linkStyle{
+  text-decoration: none;
+}
+
+.linkStyle:visited{
+  color: inherit;
+}
+
+.checkedActCont{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 120vh;
+}
+
+.usersContainer{
+  margin-top: 0px;
+  margin-left: 30vh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.recentassignments{
+  width: 100%;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+}

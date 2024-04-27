@@ -1,0 +1,27 @@
+.option{
+    background-color: #d9d9d9;
+    border: 1px solid black;
+    padding: 5px;
+    display: flex;
+    width: 30vh;
+    align-items: center;
+    border-radius: 10px;
+    margin-bottom: 3vh;
+    cursor: pointer;
+}
+
+.option > img{
+    width: 6vh;
+    height: 6vh;
+    margin: 0px 10px;
+}
+
+.option > h1{
+    margin: 10px 10px;
+    font: 700 15px League Spartan, -apple-system, Roboto, Helvetica,
+    sans-serif;
+}
+
+.option:hover{
+    background-color: #999999;
+}
