@@ -37,7 +37,7 @@ function Sidebar() {
             className="icons"
           />
           </Link>
-          <Link to="/checked-assignments">
+          <Link to="/feedback">
           <img
             loading="lazy"
             id="ok"
