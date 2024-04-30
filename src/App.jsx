@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react'
 import Sidebar from './components/sidebar';
 import Course from './components/course'
@@ -11,9 +12,11 @@ import NextButton from './components/nextbutton';
 import Files from './components/files'
 import Activity from './components/activity'
 import User from './components/user'
-import {Button, EditIcon} from 'evergreen-ui'
+import {Button, EditIcon, Pane, Dialog, FileUploader, FileCard, FileRejectionReason} from 'evergreen-ui'
 import { Disclosure } from '@headlessui/react'
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { commentsToCode } from './comments';
+import { generatePdfFromComments } from './report';
 
 export default function App() {
   return (
@@ -28,6 +31,7 @@ export default function App() {
           <Route path="/new-assignment/files" element={ <NuevaTareaScreen3/> } />
           <Route path="/new-assignment/tests" element={ <NuevaTareaScreen4/> } />
           <Route path="/new-assignment/prev" element={ <NuevaTareaScreen5/> } />
+          <Route path="/feedback" element={ <FeedbackScreen/> } />
         </Routes>
   </div>
 );
@@ -41,12 +45,39 @@ function MainScreen(){
   );
 }
 
+function DefaultDialogExample() {
+  const [isShown, setIsShown] = React.useState(false)
+  return (
+    <Pane>
+      <Dialog
+        isShown={isShown}
+        title="Dialog title"
+        onCloseComplete={() => setIsShown(false)}
+        confirmLabel="Custom Label"
+      >
+        Dialog content
+      </Dialog>
+
+      <Button onClick={() => setIsShown(true)}>Show Dialog</Button>
+    </Pane>
+  )
+}
+
 function CoursesScreen(){
-return(
+  const [isShown, setIsShown] = React.useState(false);
+
+  const handleShowDialog = () => {
+    setIsShown(true);
+  };
+
+  return(
   <div style={{display:'flex',position:'relative',}}>
     <Sidebar className="sidebar"/>
   <div>
   <h3>Cursos</h3>
+    <Button marginY={8} marginRight={12} marginLeft={1100} iconBefore={EditIcon} onClick={handleShowDialog}>
+      Nuevo curso
+    </Button>
     <div className='checkedActCont'>
       <Activity activityName='TC1002' group='30 integrantes' route='course'/>
       <Activity activityName='TC1003' group='25 integrantes'/>
@@ -54,6 +85,18 @@ return(
       <Activity activityName='MA1028' group='20 integrantes'/>
     </div>
   </div>
+  {isShown && (
+  <Pane>
+      <Dialog
+        isShown={isShown}
+        title="Dialog title"
+        onCloseComplete={() => setIsShown(false)}
+        confirmLabel="Custom Label"
+      >
+        Dialog content
+      </Dialog>
+    </Pane>
+  )}
   </div>
 );
 }
@@ -90,7 +133,7 @@ function CheckedHWScreen(props){
     <div style={{display:'flex',position:'relative',}}>
     <Sidebar className="sidebar"/>
   <div>
-  <h3>Actividades revisadas</h3>
+  <h3>Tareas revisadas</h3>
     <div className="checkedActCont">
       <Activity activityName='Activity 1' group ='Grupo 2004' route='assignment'/>
       <Activity activityName='Activity 1' group ='Grupo 3022'/>
@@ -115,12 +158,6 @@ function NuevaTareaScreen2(){
           <TextField type = "title" placeholder = 'Ingrese el titulo de la tarea'/>
           <TextField type = "desc" placeholder = 'Ingrese la descripción de la tarea'/>
         </div>
-        <div className="languages">
-        <h3>Lenguaje</h3>
-        <Options language = 'Python'/>
-        <Options language = "C++"/>
-        <Options language = "Java"/>
-      </div> 
     </div>
     </div>
   );
@@ -135,8 +172,7 @@ function NuevaTareaScreen3(){
       <Tablist/>
       <h2>Archivos</h2>
       <div className="filesContainer">
-      <Files language = 'C++' fileName = 'main.cpp'className='filesComp'/>
-      <Files className='filesComp'/>
+      <Files/>
       </div>
       <h2>Templates</h2>
         <div className="filesContainer">
@@ -202,6 +238,7 @@ function Assignment(){
       <Sidebar/>
       <div className="contPrev">
       <h3>Actividad 1</h3>
+      <Button onClick={() => generatePdfFromComments(2, "POO", ["Mal uso de encapsulacion", "Conceptos no fueron aplicados correctamente", "Errores en la definicion de clases"], ["Raul", "Leonardo"], ["Rafa", "Antonio"])}>Generar reporte </Button>
       <h2>Descripción de la tarea</h2>
       <Text content='En esta tarea tienes que arreglar los bugs del código y hacer una nueva función que pida al usuario su nombre y matricula.'/>
       <h2>Archivos y templates</h2>
@@ -214,6 +251,71 @@ function Assignment(){
       </div>
       </div>
     </div>
+  );
+}
+
+function FeedbackScreen() {
+  const [fileContent, setFileContent] = React.useState(null);
+
+  const handleFeedbackRequest = () => {
+    if (fileContent) {
+      // Realiza una solicitud a tu función que proporciona retroalimentación automática
+      commentsToCode(fileContent, 'python');
+    } else {
+      alert("Por favor, sube un archivo primero.");
+    }
+  };
+
+  const handleFileContent = (content) => {
+    setFileContent(content);
+  };
+
+  return (
+    <div className="maincontainer">
+      <Sidebar />
+      <div className="contPrev">
+        <h3>Retroalimentación automática</h3>
+        <h2>Sube un archivo para que nuestra inteligencia artificial de una retroalimentación a tu código. </h2>
+        <FileUploaderSingleUploadDemo onFileContent={handleFileContent} />
+        <Button style={{backgroundColor: '#d9d9d9',
+        width: '30vh',
+        height: '5vh', 
+        borderRadius:'8px',
+        border:'1px solid #000',
+        padding: '5px',
+        display:'flex',
+        justifyContent:"center",
+        alignItems:'center',
+        font: '700 15px League Spartan, -apple-system, Roboto, Helvetica,sans-serif'}}onClick={handleFeedbackRequest}>Enviar</Button>
+      </div>
+    </div>
+  );
+}
+
+function FileUploaderSingleUploadDemo({ onFileContent }) {
+  const [file, setFile] = React.useState(null);
+
+  const handleChange = (files) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const content = reader.result;
+      onFileContent(content);
+    };
+    reader.readAsText(files[0]);
+    setFile(files[0]);
+  };
+
+  return (
+    <Pane maxWidth={654}>
+      <FileUploader
+        label="Subir archivo"
+        description="Puedes subir un archivo desde hasta 50 MB."
+        maxSizeInBytes={50 * 1024 ** 2}
+        maxFiles={1}
+        onChange={handleChange}
+        values={file ? [file] : []}
+      />
+    </Pane>
   );
 }
 
@@ -233,3 +335,4 @@ function MyDisclosure(props) {
     </Disclosure>
     );
 }
+
