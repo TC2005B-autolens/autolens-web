@@ -18,8 +18,8 @@ const CourseCard = ({ title, groups }: CourseCardProps) => {
           <div className={cn(
             "px-2 hover:bg-muted",
             index !== 0 ? "border-t border-zinc-400" : ""
-          )}>
-            <li key={index} className="flex items-center gap-4 my-auto h-9 text-sm">
+          )} key={index}>
+            <li className="flex items-center gap-4 my-auto h-9 text-sm">
               <span className="text-base">{group.code}</span>
               <span className="ml-auto">{group.members}<Users className="inline w-[1rem] h-[1rem] ml-[0.2rem] mb-[0.2rem] text-muted-foreground"/></span>
             </li>
