@@ -19,7 +19,7 @@ function Dashboard() {
     { title: 'Courses', icon: Book, location: 'courses' },
     { title: 'Groups', icon: Users, location: 'groups' },
     { title: 'Student Submissions', icon: CircleCheck, location: 'submissions' },
-    { title: 'Create Assignment', icon: CirclePlus, location: 'newAssignment' }
+    { title: 'Create Assignment', icon: CirclePlus, location: 'new-assignment' }
   ]
   return <TooltipProvider>
     <div className="flex">
