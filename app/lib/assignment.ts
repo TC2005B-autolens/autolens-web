@@ -1,6 +1,7 @@
 import { z } from "zod"
 
 export const BaseTest = z.object({
+    id: z.string().default(""),
     type: z.string().default(""),
     title: z.string().default("")
 })
@@ -24,6 +25,7 @@ export const Test = z.discriminatedUnion('type', [
     })
 ]);
 
+
 export const NewAssignmentFormSchema = z.object({
     title: z.string().min(1),
     description: z.string().min(1),
@@ -33,7 +35,7 @@ export const NewAssignmentFormSchema = z.object({
         content: z.string()
     })),
     language: z.enum(['python']),
-    tests: z.record(z.string(), Test)
+    tests: z.array(Test)
 });
 
 export function processAssignmentForm(data: z.infer<typeof NewAssignmentFormSchema>) {

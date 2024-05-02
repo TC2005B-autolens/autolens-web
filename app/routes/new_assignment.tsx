@@ -24,54 +24,50 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
-
 type AssignmentTests = z.infer<typeof NewAssignmentFormSchema.shape.tests>
 type Test = z.infer<typeof Test>
 
 function TestEditor({ onChange, value }: { onChange: (value: AssignmentTests) => void, value?: AssignmentTests }) {
   const [popover, setPopover] = useState(false);
   
-  const testCount = Object.keys(value ?? {}).length;
+  const tests = value ?? [];
 
-  const createPartial = (type: string) => (() => {
-    onChange({
-      ...value,
-      [`test-case-${testCount+1}`]: Test.parse({ type })
-    })
+  const createEmptyTest = (type: "function" | "io" | "unit") => (() => {
+    onChange([...tests, {
+      ...Test.parse({ type }),
+      id: `${type}-${tests.length}`,
+    }])
     setPopover(false)
   })
 
-  const TestCard = ({ id, test }: { id: string, test: Test }) => {
+  const TestCard = ({ id }: { id: number }) => {
+    if (!value) return null;
+
+    const [test, setTest] = useState(value[id]);
+    const [dirty, setDirty] = useState(false);
+    const updateTest = (newTest: Test) => {
+      setTest(newTest);
+      setDirty(true);
+    }
+
     return <>
       <div className="bg-muted w-full h-8 px-2 flex items-center">
         <input
           type="text"
-          className="text-sm font-mono"
-          value={id}
-          onChange={(e) => {
-            if (!value) return;
-            let newVal = Object.keys(value).reduce((acc, key) => {
-              if (key === id) {
-                acc[e.target.value] = value[key]
-              } else {
-                acc[key] = value[key]
-              }
-              return acc
-            }, {} as Record<string, Test>)
-            onChange(newVal)
-          }}
+          className="text-sm font-mono bg-inherit focus:outline-accent-foreground focus:outline-1 focus:outline rounded-sm"
+          value={test.id}
+          onChange={e => updateTest({...test, id: e.target.value})}
         />
-        <span className="text-xs uppercase ml-2 bg-muted-foreground text-white rounded-sm px-1.5 py-0.5">{test.type}</span>
+        <span className="text-xs uppercase ml-2 bg-muted-foreground text-white rounded-sm px-1.5 py-0.5">{value[id].type}</span>
       </div>
       <div>
-        <pre><code>{JSON.stringify(test, null, 4)}</code></pre>
       </div>
     </>
   }
 
   return <div className="w-96 border">
     {
-      Object.entries(value || {}).map(([id, test], idx) => <TestCard key={idx} id={id} test={test}/>)
+      tests.map((_, index) => <TestCard key={index} id={index}/>)
     }
     <div className="h-14 bg-muted flex">
       <Popover open={popover} onOpenChange={setPopover}>
@@ -80,9 +76,9 @@ function TestEditor({ onChange, value }: { onChange: (value: AssignmentTests) =>
         </PopoverTrigger>
         <PopoverContent>
           <div className="flex w-full flex-col gap-2">
-            <Button variant="secondary" className="block" onClick={createPartial("io")}>IO Test</Button>
-            <Button variant="secondary" className="block" onClick={createPartial("function")}>Function Test</Button>
-            <Button variant="secondary" className="block" onClick={createPartial("unit")}>Unit Test</Button>
+            <Button variant="secondary" className="block" onClick={createEmptyTest("io")}>IO Test</Button>
+            <Button variant="secondary" className="block" onClick={createEmptyTest("function")}>Function Test</Button>
+            <Button variant="secondary" className="block" onClick={createEmptyTest("unit")}>Unit Test</Button>
           </div>
         </PopoverContent>
       </Popover>
@@ -119,8 +115,6 @@ function CreateAssignmentScreen() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="javascript">JavaScript</SelectItem>
-                      <SelectItem value="typescript">TypeScript</SelectItem>
                       <SelectItem value="python">Python</SelectItem>
                     </SelectContent>
                   </Select>
