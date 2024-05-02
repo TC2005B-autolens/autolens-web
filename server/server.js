@@ -7,6 +7,9 @@ import cors from "cors";
 
 import "dotenv/config";
 
+//const { NewAssignmentFormSchema } = require('./lib/assignment.ts')
+
+
 const app = express();
 
 const client = new pg.Client({
@@ -56,8 +59,38 @@ app.get("/member/:groupid/canva/nu", async (req, res) => {
   }
 });
 
-app.post("/assignments", (req, res) => {
+app.post("/assignments", async (req, res) => {
   const data = req.body;
+
+  try {
+    //const validatedData = NewAssignmentFormSchema.parse(data);
+
+    const query = `
+      INSERT INTO assignments (title, description, due_date, files, language, tests)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `;
+    const values = [
+      /*validatedData.title,
+      validatedData.description,
+      validatedData.dueDate,
+      JSON.stringify(validatedData.files),
+      validatedData.language,
+      JSON.stringify(validatedData.tests),*/
+      data.title,
+      data.description,
+      data.dueDate,
+      JSON.stringify(data.files),
+      data.language,
+      JSON.stringify(data.tests),
+    ];
+
+    await client.query(query, values);
+
+    res.status(201).json({ message: "La tarea fue creada exitosamente" });
+  } catch (error) {
+    console.error("Error al crear la tarea:", error);
+    res.status(400).json({ error: error.message });
+  }
 });
 
 const port = 8867;
