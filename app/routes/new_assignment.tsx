@@ -1,8 +1,10 @@
 import { useForm } from "react-hook-form"
-import { NewAssignmentFormSchema, processAssignmentForm } from "@/lib/assignment"
+import { BaseTest, NewAssignmentFormSchema, Test, processAssignmentForm } from "@/lib/assignment"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { format } from "date-fns"
+import { Calendar as CalendarIcon, Plus as PlusIcon } from "lucide-react"
+import { useState } from "react"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -19,8 +21,74 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectTrigger, SelectItem, SelectValue } from "@/components/ui/select"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { Calendar as CalendarIcon } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+
+
+type AssignmentTests = z.infer<typeof NewAssignmentFormSchema.shape.tests>
+type Test = z.infer<typeof Test>
+
+function TestEditor({ onChange, value }: { onChange: (value: AssignmentTests) => void, value?: AssignmentTests }) {
+  const [popover, setPopover] = useState(false);
+  
+  const testCount = Object.keys(value ?? {}).length;
+
+  const createPartial = (type: string) => (() => {
+    onChange({
+      ...value,
+      [`test-case-${testCount+1}`]: Test.parse({ type })
+    })
+    setPopover(false)
+  })
+
+  const TestCard = ({ id, test }: { id: string, test: Test }) => {
+    return <>
+      <div className="bg-muted w-full h-8 px-2 flex items-center">
+        <input
+          type="text"
+          className="text-sm font-mono"
+          value={id}
+          onChange={(e) => {
+            if (!value) return;
+            let newVal = Object.keys(value).reduce((acc, key) => {
+              if (key === id) {
+                acc[e.target.value] = value[key]
+              } else {
+                acc[key] = value[key]
+              }
+              return acc
+            }, {} as Record<string, Test>)
+            onChange(newVal)
+          }}
+        />
+        <span className="text-xs uppercase ml-2 bg-muted-foreground text-white rounded-sm px-1.5 py-0.5">{test.type}</span>
+      </div>
+      <div>
+        <pre><code>{JSON.stringify(test, null, 4)}</code></pre>
+      </div>
+    </>
+  }
+
+  return <div className="w-96 border">
+    {
+      Object.entries(value || {}).map(([id, test], idx) => <TestCard key={idx} id={id} test={test}/>)
+    }
+    <div className="h-14 bg-muted flex">
+      <Popover open={popover} onOpenChange={setPopover}>
+        <PopoverTrigger asChild>
+          <Button type="button" variant="outline" className="m-auto" size="icon"><PlusIcon className="w-4 h-4"/></Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <div className="flex w-full flex-col gap-2">
+            <Button variant="secondary" className="block" onClick={createPartial("io")}>IO Test</Button>
+            <Button variant="secondary" className="block" onClick={createPartial("function")}>Function Test</Button>
+            <Button variant="secondary" className="block" onClick={createPartial("unit")}>Unit Test</Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
+  </div>
+}
 
 function CreateAssignmentScreen() {
   const form = useForm<z.infer<typeof NewAssignmentFormSchema>>({
@@ -119,8 +187,22 @@ function CreateAssignmentScreen() {
             />
           </TabsContent>
           <TabsContent value="files"> HELLO WORLD</TabsContent>
-          <TabsContent value="tests"> HELLO WORLD</TabsContent>
+          <TabsContent value="tests">
+            <FormField
+              control={form.control}
+              name="tests"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <TestEditor onChange={field.onChange} value={field.value} />
+                  </FormControl>
+                  <FormMessage/>
+                </FormItem>
+              )}
+            />
+          </TabsContent>
         </Tabs>
+      
       </form>
     </Form>
   </div>;

@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { Book, Users, CirclePlus, CircleCheck, LucideIcon } from 'lucide-react'
 import { Link, Outlet } from 'react-router-dom'
 import lensLogo from './assets/lens_logo.svg'
+import { title } from 'process'
 
 interface NavProps {
   links: {
@@ -19,7 +20,7 @@ function Dashboard() {
     { title: 'Courses', icon: Book, location: 'courses' },
     { title: 'Groups', icon: Users, location: 'groups' },
     { title: 'Student Submissions', icon: CircleCheck, location: 'submissions' },
-    { title: 'Create Assignment', icon: CirclePlus, location: 'new-assignment' }
+    { title: 'Create Assignment', icon: CirclePlus, location: 'new-assignment' },
   ]
   return <TooltipProvider>
     <div className="flex">
