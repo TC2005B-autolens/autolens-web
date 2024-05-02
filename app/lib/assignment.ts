@@ -1,27 +1,26 @@
 import { z } from "zod"
 
 export const BaseTest = z.object({
-    id: z.string(),
-    type: z.string(),
-    title: z.string()
+    type: z.string().default(""),
+    title: z.string().default("")
 })
 
-const Test = z.discriminatedUnion('type', [
+export const Test = z.discriminatedUnion('type', [
     BaseTest.extend({
         type: z.literal('io'),
-        in: z.array(z.string()),
-        out: z.string()
+        in: z.array(z.string()).default([]),
+        out: z.string().default('')
     }),
     BaseTest.extend({
         type: z.literal('function'),
-        file: z.string(),
-        function: z.string(),
-        params: z.array(z.string()),
-        out: z.string(),
+        file: z.string().default(''),
+        function: z.string().default(''),
+        params: z.array(z.string()).default([]),
+        out: z.string().default(''),
     }),
     BaseTest.extend({
         type: z.literal('unit'),
-        contents: z.string()
+        contents: z.string().default('')
     })
 ]);
 
@@ -34,7 +33,7 @@ export const NewAssignmentFormSchema = z.object({
         content: z.string()
     })),
     language: z.enum(['python']),
-    tests: z.array(Test)
+    tests: z.record(z.string(), Test)
 });
 
 export function processAssignmentForm(data: z.infer<typeof NewAssignmentFormSchema>) {
