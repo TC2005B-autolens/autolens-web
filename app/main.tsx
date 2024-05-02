@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Dashboard from './App'
 import './globals.css'
 import CourseScreen from './routes/courses'
-import NewAssignmentScreen from './routes/new-assignment'
+import NewAssignmentScreen from './routes/new_assignment'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
