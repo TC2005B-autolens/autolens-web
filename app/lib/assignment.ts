@@ -25,11 +25,10 @@ const Test = z.discriminatedUnion('type', [
     })
 ]);
 
-
-const NewAssignmentFormSchema = z.object({
+export const NewAssignmentFormSchema = z.object({
     title: z.string().min(1),
     description: z.string().min(1),
-    dueDate: z.string().datetime(),
+    dueDate: z.date(),
     files: z.array(z.object({
         path: z.string().min(1),
         content: z.string()
@@ -37,3 +36,7 @@ const NewAssignmentFormSchema = z.object({
     language: z.enum(['python']),
     tests: z.array(Test)
 });
+
+export function processAssignmentForm(data: z.infer<typeof NewAssignmentFormSchema>) {
+    console.log(data);
+}
