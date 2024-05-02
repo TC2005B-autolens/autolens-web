@@ -36,7 +36,7 @@ export const NewAssignmentFormSchema = z.object({
     })),
     language: z.enum(['python']),
     tests: z.array(Test)
-});
+}).strict();
 
 export function processAssignmentForm(data: z.infer<typeof NewAssignmentFormSchema>) {
     console.log(data);
