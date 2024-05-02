@@ -32,12 +32,21 @@ const CourseCard = ({ title, groups }: CourseCardProps) => {
 
 function CourseScreen() {
   return (
-    <div>
+    <div className="grid grid-cols-3 gap-10 ml-10 mt-10 mb-10">
       <CourseCard title='Math' groups={[
         { code: 'MATH101', members: 10 },
         { code: 'MATH102', members: 12 },
         { code: 'MATH103', members: 8 }
+      ]}/>
+      <CourseCard title='Physics' groups={[{ code: 'PHYS101', members: 15 }]} />
+      <CourseCard title='Physics' groups={[{ code: 'PHYS101', members: 15 }]} />
+      <CourseCard title='Physics' groups={[{ code: 'PHYS101', members: 15 }]} />
+      <CourseCard title='Physics' groups={[{ code: 'PHYS101', members: 15 }]} />
+      <CourseCard title='Physics' groups={[{ code: 'PHYS101', members: 15 },
+        { code: 'PHYS102', members: 10}
       ]} />
+      <CourseCard title='Physics' groups={[{ code: 'PHYS101', members: 15 }]} />
+      <CourseCard title='Physics' groups={[{ code: 'PHYS101', members: 15 }]} />
       <CourseCard title='Physics' groups={[{ code: 'PHYS101', members: 15 }]} />
     </div>
   )
