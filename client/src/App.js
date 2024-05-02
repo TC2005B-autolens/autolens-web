@@ -14,6 +14,16 @@ const getStudentID = () => {
       console.error("Hubo un problema con la solicitud:", error);
     });
 };
+const getStudentGroups = () => {
+  axios
+    .get(`http://localhost:3000/asdnc/1`)
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error("Hubo un problema con la solicitud:", error);
+    });
+};
 
 // const getGrades = () => {
 //   axios
@@ -78,6 +88,7 @@ function App() {
           Learn React
         </a>
         <button onClick={getStudentID}>Get Student ID</button>
+        <button onClick={getStudentGroups}>Get Groups</button>
         {/* <button onClick={getGrades}>Get Grades</button>
         <button onClick={postAssignment}>Publish Assignments</button> */}
         {/* <button onClick={postGrade}>Post Grade</button> */}

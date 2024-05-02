@@ -49,6 +49,24 @@ app.get("/member/:groupid/canva/nu", async (req, res) => {
   }
 });
 
+app.get("/asdnc/:studentid", async (req, res) => {
+  try {
+    const { studentid } = req.params;
+    const query = `
+      SELECT g.code AS group_code
+      FROM persons p
+      JOIN group_members gm ON p.id = gm.member_id
+      JOIN groups g ON gm.group_id = g.id
+      WHERE p.id = $1;
+    `;
+    const result = await pool.query(query, [studentid]);
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error al ejecutar la consulta:", error.message);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
 // app.get("/member/canva/:group_id/grading", async (req, res) => {
 //   try {
 //     const { group_id } = req.params;
