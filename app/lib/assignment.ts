@@ -11,18 +11,18 @@ export const Test = z.discriminatedUnion('type', [
         type: z.literal('io'),
         in: z.array(z.string()).default([]),
         out: z.string().default('')
-    }),
+    }).strict(),
     BaseTest.extend({
         type: z.literal('function'),
         file: z.string().default(''),
         function: z.string().default(''),
         params: z.array(z.string()).default([]),
         out: z.string().default(''),
-    }),
+    }).strict(),
     BaseTest.extend({
         type: z.literal('unit'),
         contents: z.string().default('')
-    })
+    }).strict()
 ]);
 
 
@@ -32,7 +32,8 @@ export const NewAssignmentFormSchema = z.object({
     dueDate: z.date(),
     files: z.array(z.object({
         path: z.string().min(1),
-        content: z.string()
+        content: z.string(),
+        write: z.boolean()
     })),
     language: z.enum(['python']),
     tests: z.array(Test)
