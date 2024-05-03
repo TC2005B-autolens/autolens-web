@@ -29,12 +29,12 @@ export const Test = z.discriminatedUnion('type', [
 export const NewAssignmentFormSchema = z.object({
     title: z.string().min(1),
     description: z.string().min(1),
-    dueDate: z.date(),
+    dueDate: z.string().datetime(),
     files: z.array(z.object({
         path: z.string().min(1),
         content: z.string(),
         write: z.boolean()
-    })),
+    })).min(1),
     language: z.enum(['python']),
     tests: z.array(Test)
 }).strict();

@@ -24,12 +24,23 @@ import { Calendar } from "@/components/ui/calendar"
 import { TestEditor } from "@/components/test_editor"
 import { FileEditor } from "@/components/file_editor"
 
-
-
 function CreateAssignmentScreen() {
   const form = useForm<z.infer<typeof NewAssignmentFormSchema>>({
-    resolver: zodResolver(NewAssignmentFormSchema)
+    resolver: zodResolver(NewAssignmentFormSchema),
+    defaultValues: {
+      language: "python",
+      tests: []
+    }
   });
+
+  function sectionHasErrors(section: "assignment" | "filesntests" | "publish"): boolean {
+    const errorMap: Record<string, string[]> = {
+      assignment: ["title", "description", "dueDate", "language"],
+      filesntests: ["files", "tests"],
+      publish: []
+    }
+    return Object.keys(form.formState.errors).some((key) => errorMap[section].includes(key));
+  }
 
   return <div className="h-screen w-full px-12 py-8 relative">
     <h1 className="text-4xl font-extrabold mb-8">Create Assignment</h1>
@@ -37,12 +48,28 @@ function CreateAssignmentScreen() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(processAssignmentForm)}>
         <Tabs defaultValue="assignment">
-          <TabsList>
-            <TabsTrigger value="assignment">Assignment</TabsTrigger>
-            <TabsTrigger value="filesntests">Files & Tests</TabsTrigger>
-          </TabsList>
+            <TabsList>
+              <TabsTrigger
+                value="assignment"
+                className={sectionHasErrors("assignment") ? "!text-red-500" : ""}
+              >
+                Assignment
+              </TabsTrigger>
+              <TabsTrigger
+                value="filesntests"
+                className={sectionHasErrors("filesntests") ? "!text-red-500" : ""}
+              >
+                Files & Tests
+              </TabsTrigger>
+              <TabsTrigger
+                value="publish"
+                className={sectionHasErrors("publish") ? "!text-red-500" : ""}
+              >
+                Publish
+              </TabsTrigger>
+            </TabsList>
             <div className="absolute top-[10rem] bottom-10 left-12 right-12">
-              <TabsContent value="assignment" className="mt-0 h-full">
+              <TabsContent value="assignment" className="mt-0 h-full w-96">
                 <FormField
                   control={form.control}
                   name="language"
@@ -106,8 +133,11 @@ function CreateAssignmentScreen() {
                         <PopoverContent className="w-auto p-0" align="start">
                           <Calendar
                             mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
+                            selected={new Date(field.value)}
+                            onSelect={value => {
+                              value?.setHours(23, 59, 59, 999);
+                              field.onChange(value?.toISOString());
+                            }}
                             disabled={(date: Date) =>
                               date < new Date()
                             }
@@ -115,43 +145,56 @@ function CreateAssignmentScreen() {
                           />
                         </PopoverContent>
                       </Popover>
-                      <FormDescription>The submission deadline will be at 11:59 PM UTC on the selected date.</FormDescription>
+                      <FormDescription>The submission deadline is always set to 23:59 on your current timezone.</FormDescription>
                     </FormItem>
                   )}
                 />
               </TabsContent>
-              <TabsContent value="filesntests" className="mt-0 h-full flex">
-                <FormField
-                  control={form.control}
-                  name="files"
-                  render={({ field }) => (
-                    <FormItem className="h-full flex-grow">
-                      <FormControl>
-                        <FileEditor onChange={field.onChange} value={field.value}/>
-                      </FormControl>
-                      <FormMessage/>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="tests"
-                  render={({ field }) => (
-                    <FormItem className="h-full">
-                      <FormControl>
-                        <TestEditor onChange={field.onChange} value={field.value} />
-                      </FormControl>
-                      <FormMessage/>
-                    </FormItem>
-                  )}
-                />
+              <TabsContent value="filesntests" className="mt-0 h-full">
+                <div className="h-full flex">
+                  <FormField
+                    control={form.control}
+                    name="files"
+                    render={({ field }) => (
+                      <FormItem className="h-full flex-grow">
+                        <FormControl>
+                          <FileEditor onChange={field.onChange} value={field.value}/>
+                        </FormControl>
+                        <FormMessage/>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="tests"
+                    render={({ field }) => (
+                      <FormItem className="h-full">
+                        <FormControl>
+                          <TestEditor onChange={field.onChange} value={field.value} />
+                        </FormControl>
+                        <FormMessage/>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </TabsContent>
+              <TabsContent value="publish">
+                <Button>Publish</Button>
+                {
+                  Object.keys(form.formState.errors).length > 0 && (
+                    <div className="mt-4">
+                      <FormMessage>
+                        There are some errors in the form. Please fix them before submitting.
+                      </FormMessage>
+                    </div>
+                  )
+                }
               </TabsContent>
             </div>
         </Tabs>
-      
       </form>
     </Form>
-  </div>;
+  </div>
 }
 
 export default CreateAssignmentScreen;

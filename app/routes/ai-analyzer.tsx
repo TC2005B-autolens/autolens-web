@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useState } from 'react';
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { commentsToCode } from "../comments.ts"
+import { commentsToCode } from "../lib/comments.ts"
 import { Loader2 } from "lucide-react"
  
  
