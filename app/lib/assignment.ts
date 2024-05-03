@@ -11,18 +11,18 @@ export const Test = z.discriminatedUnion('type', [
         type: z.literal('io'),
         in: z.array(z.string()).default([]),
         out: z.string().default('')
-    }),
+    }).strict(),
     BaseTest.extend({
         type: z.literal('function'),
         file: z.string().default(''),
         function: z.string().default(''),
         params: z.array(z.string()).default([]),
         out: z.string().default(''),
-    }),
+    }).strict(),
     BaseTest.extend({
         type: z.literal('unit'),
         contents: z.string().default('')
-    })
+    }).strict()
 ]);
 
 
