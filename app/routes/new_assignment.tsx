@@ -29,7 +29,6 @@ function CreateAssignmentScreen() {
     resolver: zodResolver(NewAssignmentFormSchema),
     defaultValues: {
       language: "python",
-      tests: []
     }
   });
 
