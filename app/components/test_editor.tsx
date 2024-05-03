@@ -1,6 +1,6 @@
 import CodeEditor from "react-simple-code-editor"
-import { Calendar as CalendarIcon, Plus, Save, Trash } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { Plus, Save, Trash } from "lucide-react"
+import { useState } from "react"
 import { z } from "zod"
 
 // @ts-ignore
@@ -61,8 +61,8 @@ export function TestEditor({ onChange, value }: { onChange: (value: AssignmentTe
       // Esta función está aquí en caso que se tenga que actualizar el test
       // si fueramos a dejar de usar el editor de json y usar un formulario
       const updateTest = (newTest: Test) => {
-      setTest(newTest);
-      setDirty(true);
+        setTest(newTest);
+        setDirty(true);
       }
 
       const saveJSON = () => {
@@ -98,7 +98,7 @@ export function TestEditor({ onChange, value }: { onChange: (value: AssignmentTe
               setDirty(true);
           }}
           padding={10}
-          className={cn("font-mono", !parsedJSON.valid ? "outline-red-500 outline outline-1" : "")}
+          className={cn("font-mono bg-background", !parsedJSON.valid ? "outline-red-500 outline outline-1" : "")}
           />
           {
           dirty && (
@@ -119,11 +119,11 @@ export function TestEditor({ onChange, value }: { onChange: (value: AssignmentTe
       </div>
   }
 
-  return <div className="w-96 border">
+  return <div className="w-96 border max-h-full overflow-scroll bg-muted">
       {
-      tests.map((_, index) => <TestCard key={index} id={index}/>)
+        tests.map((_, index) => <TestCard key={index} id={index}/>)
       }
-      <div className="h-14 bg-muted flex">
+      <div className="h-14 flex">
       <Popover open={popover} onOpenChange={setPopover}>
           <PopoverTrigger asChild>
           <Button type="button" variant="outline" className="m-auto" size="icon"><Plus className="w-4 h-4"/></Button>

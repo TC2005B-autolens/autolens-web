@@ -31,7 +31,7 @@ function CreateAssignmentScreen() {
     resolver: zodResolver(NewAssignmentFormSchema)
   });
 
-  return <div className="px-12 py-8">
+  return <div className="h-screen w-full px-12 py-8 relative">
     <h1 className="text-4xl font-extrabold mb-8">Create Assignment</h1>
 
     <Form {...form}>
@@ -42,112 +42,114 @@ function CreateAssignmentScreen() {
             <TabsTrigger value="files">Files</TabsTrigger>
             <TabsTrigger value="tests">Tests</TabsTrigger>
           </TabsList>
-          <TabsContent value="assignment">
-            <FormField
-              control={form.control}
-              name="language"
-              render={({ field }) => (
-                <FormItem className="w-48 focus:ring-0">
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a language..."/>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="python">Python</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="Assignment Title" {...field}/>
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Textarea placeholder="Description" {...field}/>
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="dueDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Due Date</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
+            <div className="absolute top-[10rem] bottom-10 left-12 right-12">
+              <TabsContent value="assignment" className="mt-0 h-full">
+                <FormField
+                  control={form.control}
+                  name="language"
+                  render={({ field }) => (
+                    <FormItem className="w-48 focus:ring-0">
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a language..."/>
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="python">Python</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage/>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
                       <FormControl>
-                        <Button variant="outline" className="w-64 pl-3 text-left font-normal">
-                          {
-                            field.value ? format(field.value, "PPP") : <span>Pick a date...</span>
-                          }
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50"/>
-                        </Button>
+                        <Input placeholder="Assignment Title" {...field}/>
                       </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date: Date) =>
-                          date < new Date()
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormDescription>The submission deadline will be at 11:59 PM UTC on the selected date.</FormDescription>
-                </FormItem>
-              )}
-            />
-          </TabsContent>
-          <TabsContent value="files">
-            <FormField
-              control={form.control}
-              name="files"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <FileEditor onChange={field.onChange} value={field.value}/>
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
-          </TabsContent>
-          <TabsContent value="tests">
-            <FormField
-              control={form.control}
-              name="tests"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <TestEditor onChange={field.onChange} value={field.value} />
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
-          </TabsContent>
+                      <FormMessage/>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea placeholder="Description" {...field}/>
+                      </FormControl>
+                      <FormMessage/>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dueDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Due Date</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button variant="outline" className="w-64 pl-3 text-left font-normal">
+                              {
+                                field.value ? format(field.value, "PPP") : <span>Pick a date...</span>
+                              }
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50"/>
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date: Date) =>
+                              date < new Date()
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormDescription>The submission deadline will be at 11:59 PM UTC on the selected date.</FormDescription>
+                    </FormItem>
+                  )}
+                />
+              </TabsContent>
+              <TabsContent value="files" className="mt-0 h-full">
+                <FormField
+                  control={form.control}
+                  name="files"
+                  render={({ field }) => (
+                    <FormItem className="h-full">
+                      <FormControl>
+                        <FileEditor onChange={field.onChange} value={field.value}/>
+                      </FormControl>
+                      <FormMessage/>
+                    </FormItem>
+                  )}
+                />
+              </TabsContent>
+              <TabsContent value="tests" className="mt-0 h-full">
+                <FormField
+                  control={form.control}
+                  name="tests"
+                  render={({ field }) => (
+                    <FormItem className="h-full">
+                      <FormControl>
+                        <TestEditor onChange={field.onChange} value={field.value} />
+                      </FormControl>
+                      <FormMessage/>
+                    </FormItem>
+                  )}
+                />
+              </TabsContent>
+            </div>
         </Tabs>
       
       </form>

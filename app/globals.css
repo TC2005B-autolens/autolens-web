@@ -73,4 +73,7 @@
     body {
       @apply bg-background text-foreground;
     }
+    .rsce-line-number {
+      @apply absolute left-0 text-muted-foreground opacity-40 text-right w-8;
+    }
   }

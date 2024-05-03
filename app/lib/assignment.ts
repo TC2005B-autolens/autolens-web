@@ -32,7 +32,8 @@ export const NewAssignmentFormSchema = z.object({
     dueDate: z.date(),
     files: z.array(z.object({
         path: z.string().min(1),
-        content: z.string()
+        content: z.string(),
+        write: z.boolean()
     })),
     language: z.enum(['python']),
     tests: z.array(Test)
