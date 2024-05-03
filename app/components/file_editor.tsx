@@ -190,7 +190,7 @@ export function FileEditor({ onChange, value }: { onChange: (value: AssignmentFi
 
   const dirty = selectedFile !== null && btoa(partialContent) !== files[selectedFile]?.content;
 
-  return <div className="h-full border border-zinc-300 flex">
+  return <div className="h-full flex">
     <div className="w-56 border border-zinc-300 bg-muted overflow-scroll h-full">
       <TooltipProvider>
         {
@@ -267,7 +267,7 @@ export function FileEditor({ onChange, value }: { onChange: (value: AssignmentFi
         </div> 
       }
     </div>
-    <div className="flex-1 relative">
+    <div className="flex-1 relative border border-l-0 border-zinc-300">
       { 
         selectedFile !== null ? (
           <CodeEditor
