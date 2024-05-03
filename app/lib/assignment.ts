@@ -33,12 +33,25 @@ export const NewAssignmentFormSchema = z.object({
     files: z.array(z.object({
         path: z.string().min(1),
         content: z.string(),
-        write: z.boolean()
+        write: z.boolean(),
+        main: z.boolean().optional()
     })).min(1),
     language: z.enum(['python']),
-    tests: z.array(Test)
+    tests: z.array(Test).min(1),
 }).strict();
 
-export function processAssignmentForm(data: z.infer<typeof NewAssignmentFormSchema>) {
-    console.log(data);
+export async function processAssignmentForm(data: z.infer<typeof NewAssignmentFormSchema>) {
+  const response = await fetch('/api/groups/1/assignments', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+
+  if (!response.ok) {
+    console.error(`HTTP error! status: ${response.status}`);
+  }
+
+  const responseData = await response.json();
 }
