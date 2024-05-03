@@ -9,12 +9,12 @@ const client = new Client({
   connectionString:
     "postgresql://autolensDB_owner:e4Fv0YIATVWb@ep-dry-wave-a5d77r71.us-east-2.aws.neon.tech/autolensDB?sslmode=require",
 });
-
 client.connect((error) => {
   if (error) throw error;
   console.log("Conectada a la base de datos");
 });
-//muestra total de los miembroes de un grupo
+/*-------------------------------------------------------------------------------------*/
+//muestra total de los miembros de un grupo
 app.get("/member/:groupid/canva/nu", async (req, res) => {
   try {
     const { groupid } = req.params;
@@ -48,6 +48,7 @@ app.get("/member/:groupid/canva/nu", async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 });
+/*-------------------------------------------------------------------------------------*/
 //Muestra los grupos en los que se encuentra un estudiante
 app.get("/asdnc/:studentid", async (req, res) => {
   try {
@@ -58,7 +59,6 @@ app.get("/asdnc/:studentid", async (req, res) => {
       JOIN groups g ON gm.group_id = g.id
       WHERE gm.member_id = $1
       GROUP BY g.code;
-
     `;
     const result = await pool.query(query, [studentid]);
     res.json(result.rows);
@@ -67,6 +67,7 @@ app.get("/asdnc/:studentid", async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 });
+/*-------------------------------------------------------------------------------------*/
 //Muestra todos los grupos que existen en la DB
 app.get("/groups/all", async (req, res) => {
   try {
@@ -81,32 +82,41 @@ app.get("/groups/all", async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 });
+/*-------------------------------------------------------------------------------------*/
 //Muestra todos los grupos que tiene un curso y los ensena en una lista
 app.get("/course/groups", async (req, res) => {
   try {
     const query = `
-      SELECT courses.id AS course_id, courses.title AS course_title, groups.code AS group_code
-      FROM groups
-      INNER JOIN courses ON groups.course_id = courses.id;
+      SELECT 
+          courses.id AS course_id, 
+          courses.title AS course_title, 
+          groups.code AS group_code,
+          COUNT(gm.member_id) AS members_count
+      FROM 
+          groups
+      INNER JOIN 
+          courses ON groups.course_id = courses.id
+      LEFT JOIN 
+          group_members gm ON groups.id = gm.group_id
+      GROUP BY
+          courses.id, courses.title, groups.code;
     `;
     const result = await client.query(query);
     let courses = new Map();
-
     // Iterar sobre los resultados y agrupar los grupos por curso
     result.rows.forEach((row) => {
-      const { course_id, course_title, group_code } = row;
-
+      const { course_id, course_title, group_code, members_count } = row;
       // Verificar si ya existe el curso en el mapa
       if (!courses.has(course_id)) {
         // Si no existe, crear una nueva entrada para el curso
         courses.set(course_id, {
           course_id,
           course_title,
-          groups: [group_code], // Inicializar la lista de grupos con el primer grupo
+          groups: [{ group_code, members_count }], // Inicializar la lista de grupos con el primer grupo
         });
       } else {
         const course = courses.get(course_id);
-        course.groups.push(group_code);
+        course.groups.push({ group_code, members_count });
       }
     });
     const coursesArray = Array.from(courses.values());
@@ -116,7 +126,7 @@ app.get("/course/groups", async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 });
-
+/*-------------------------------------------------------------------------------------*/
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor Express en funcionamiento en el puerto ${PORT}`);
