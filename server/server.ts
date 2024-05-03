@@ -16,7 +16,7 @@ if (!lens_api_url) {
   process.exit(1);
 }
 
-const client = new pg.Client({
+let client: (pg.Client | null) = new pg.Client({
   connectionString: process.env.DB_CONNECTION_STRING || "",
 });
 
@@ -25,8 +25,9 @@ client.connect((error) => {
   console.log("Conectado a la base de datos");
 });
 
-client.on('error', (error) => {
+client.on('error', async (error) => {
   console.error('Error en la conexión a la base de datos:', error);
+  client = null;
 });
 
 app.get("/", (req, res) => {
@@ -57,6 +58,12 @@ app.post("/api/groups/:gid/assignments", async (req, res) => {
       return response.json();
     });
 
+    if (!client) {
+      console.log('Base de datos desconectada. Intentando reconectar...');
+      client = new pg.Client({
+        connectionString: process.env.DB_CONNECTION_STRING || "",
+      });
+    }
     await client.query(
       `
         INSERT INTO assignments (title, description, pub_date, due_date, group_id, lens_data) VALUES
