@@ -2,7 +2,7 @@
 import { buttonVariants } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import { Book, Users, CirclePlus, CircleCheck, LucideIcon, BrainCircuitIcon } from 'lucide-react'
+import { Book, Users, CirclePlus, CircleCheck, LucideIcon, BrainCircuitIcon, Sparkles } from 'lucide-react'
 import { Link, Outlet } from 'react-router-dom'
 import lensLogo from './assets/lens_logo.svg'
 import { title } from 'process'
@@ -21,6 +21,7 @@ function Dashboard() {
     { title: 'Groups', icon: Users, location: 'groups' },
     { title: 'Student Submissions', icon: CircleCheck, location: 'submissions' },
     { title: 'Create Assignment', icon: CirclePlus, location: 'new-assignment' },
+    { title: 'Autograder Demo', icon: Sparkles, location: 'demo' },
     { title: 'AI Analyzer', icon: BrainCircuitIcon, location: 'ai-analyzer' }
   ]
   return <TooltipProvider>

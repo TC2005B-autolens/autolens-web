@@ -89,6 +89,46 @@ app.post("/api/groups/:gid/assignments", async (req, res) => {
   }
 });
 
+app.get("/api/users/:uid/assignments", async (req, res) => {
+  if (!client) {
+    console.log('Base de datos desconectada. Intentando reconectar...');
+    client = new pg.Client({
+      connectionString: process.env.DB_CONNECTION_STRING || "",
+    });
+  }
+  try {
+    const result = await client.query(
+      `
+        SELECT a.id, a.title, a.description, a.pub_date, a.due_date, a.lens_data, g.code
+        FROM assignments a
+        JOIN groups g ON a.group_id = g.id
+        JOIN group_members gm ON g.id = gm.group_id
+        WHERE gm.member_id = $1
+        GROUP BY g.code, a.id;
+      `, [req.params.uid],
+    );
+  
+    res.json(result.rows.map(row => {
+      return {
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        pubDate: row.pub_date,
+        dueDate: row.due_date,
+        groupCode: row.code,
+        lensData: JSON.parse(row.lens_data)
+      }
+    }));
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "internal server error" });
+  }
+});
+
+// app.post("/api/assignments/:aid/submit", async (req, res) => {
+
+// });
+
 const port = 8867;
 const server = ViteExpress.listen(app, port, () => {
   console.log(`Running express at http://localhost:${port}`);

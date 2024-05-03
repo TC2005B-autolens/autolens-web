@@ -24,7 +24,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { TestEditor } from "@/components/test_editor"
 import { FileEditor } from "@/components/file_editor"
 
-function CreateAssignmentScreen() {
+function AssignmentScreen() {
   const form = useForm<z.infer<typeof NewAssignmentFormSchema>>({
     resolver: zodResolver(NewAssignmentFormSchema),
     defaultValues: {
@@ -73,7 +73,7 @@ function CreateAssignmentScreen() {
                   control={form.control}
                   name="language"
                   render={({ field }) => (
-                    <FormItem className="w-48 focus:ring-0">
+                    <FormItem className="w-48 focus:ring-0 my-3">
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -92,7 +92,7 @@ function CreateAssignmentScreen() {
                   control={form.control}
                   name="title"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="my-3">
                       <FormControl>
                         <Input placeholder="Assignment Title" {...field}/>
                       </FormControl>
@@ -104,7 +104,7 @@ function CreateAssignmentScreen() {
                   control={form.control}
                   name="description"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="my-3">
                       <FormControl>
                         <Textarea placeholder="Description" {...field}/>
                       </FormControl>
@@ -196,4 +196,4 @@ function CreateAssignmentScreen() {
   </div>
 }
 
-export default CreateAssignmentScreen;
+export default AssignmentScreen;

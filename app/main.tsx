@@ -6,6 +6,7 @@ import './globals.css'
 import CourseScreen from './routes/courses'
 import NewAssignmentScreen from './routes/new_assignment'
 import AIAnalyzerScreen from './routes/ai-analyzer'
+import DemoScreen from './routes/demo'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -17,6 +18,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path='groups' element={<div>Groups</div>} />
           <Route path='submissions' element={<div>Submissions</div>} />
           <Route path='new-assignment' element={ <NewAssignmentScreen/> } />
+          <Route path='demo' element={<DemoScreen/>} />
           <Route path='ai-analyzer' element={ <AIAnalyzerScreen/> } />
         </Route>
       </Routes>
