@@ -101,17 +101,17 @@ export function TestEditor({ onChange, value }: { onChange: (value: AssignmentTe
           className={cn("font-mono bg-background", !parsedJSON.valid ? "outline-red-500 outline outline-1" : "")}
           />
           {
-          dirty && (
+            dirty && (
               <Button
-              size="icon"
-              type="button"
-              className="absolute bottom-4 right-4 animate-popup"
-              onClick={saveJSON}
-              disabled={!parsedJSON.valid}
+                size="icon"
+                type="button"
+                className="absolute bottom-4 right-4 animate-popup"
+                onClick={saveJSON}
+                disabled={!parsedJSON.valid}
               >
-              <Save className="h-4 w-4"/>
+                <Save className="h-4 w-4"/>
               </Button>
-          )
+            )
           }
       </div>
       
@@ -119,14 +119,16 @@ export function TestEditor({ onChange, value }: { onChange: (value: AssignmentTe
       </div>
   }
 
-  return <div className="w-96 border max-h-full overflow-scroll bg-muted">
+  return <div className="w-96 border h-full overflow-scroll bg-muted">
       {
         tests.map((_, index) => <TestCard key={index} id={index}/>)
       }
       <div className="h-14 flex">
       <Popover open={popover} onOpenChange={setPopover}>
           <PopoverTrigger asChild>
-          <Button type="button" variant="outline" className="m-auto" size="icon"><Plus className="w-4 h-4"/></Button>
+          <Button type="button" variant="outline" className="m-auto">
+            <Plus className="mr-2 w-4 h-4"/> New Test
+          </Button>
           </PopoverTrigger>
           <PopoverContent>
           <div className="flex w-full flex-col gap-2">

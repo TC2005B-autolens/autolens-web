@@ -39,8 +39,7 @@ function CreateAssignmentScreen() {
         <Tabs defaultValue="assignment">
           <TabsList>
             <TabsTrigger value="assignment">Assignment</TabsTrigger>
-            <TabsTrigger value="files">Files</TabsTrigger>
-            <TabsTrigger value="tests">Tests</TabsTrigger>
+            <TabsTrigger value="filesntests">Files & Tests</TabsTrigger>
           </TabsList>
             <div className="absolute top-[10rem] bottom-10 left-12 right-12">
               <TabsContent value="assignment" className="mt-0 h-full">
@@ -121,12 +120,12 @@ function CreateAssignmentScreen() {
                   )}
                 />
               </TabsContent>
-              <TabsContent value="files" className="mt-0 h-full">
+              <TabsContent value="filesntests" className="mt-0 h-full flex">
                 <FormField
                   control={form.control}
                   name="files"
                   render={({ field }) => (
-                    <FormItem className="h-full">
+                    <FormItem className="h-full flex-grow">
                       <FormControl>
                         <FileEditor onChange={field.onChange} value={field.value}/>
                       </FormControl>
@@ -134,8 +133,6 @@ function CreateAssignmentScreen() {
                     </FormItem>
                   )}
                 />
-              </TabsContent>
-              <TabsContent value="tests" className="mt-0 h-full">
                 <FormField
                   control={form.control}
                   name="tests"
