@@ -41,6 +41,7 @@ export const NewAssignmentFormSchema = z.object({
 }).strict();
 
 export async function processAssignmentForm(data: z.infer<typeof NewAssignmentFormSchema>) {
+  console.log(data);
   const response = await fetch('/api/groups/1/assignments', {
     method: 'POST',
     headers: {
@@ -54,4 +55,5 @@ export async function processAssignmentForm(data: z.infer<typeof NewAssignmentFo
   }
 
   const responseData = await response.json();
+  console.log(responseData);
 }
