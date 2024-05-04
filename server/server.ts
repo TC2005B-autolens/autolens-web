@@ -20,6 +20,15 @@ let client: (pg.Client | null) = new pg.Client({
   connectionString: process.env.DB_CONNECTION_STRING || "",
 });
 
+function maybeReconnect() {
+  if (!client) {
+    console.log('Base de datos desconectada. Intentando reconectar...');
+    client = new pg.Client({
+      connectionString: process.env.DB_CONNECTION_STRING || "",
+    });
+  }
+}
+
 client.connect((error) => {
   if (error) throw error;
   console.log("Conectado a la base de datos");
@@ -53,18 +62,16 @@ app.post("/api/groups/:gid/assignments", async (req, res) => {
       })
     }).then((response) => {
       if (!response.ok) {
+        console.log(response.text());
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return response.json();
     });
 
-    if (!client) {
-      console.log('Base de datos desconectada. Intentando reconectar...');
-      client = new pg.Client({
-        connectionString: process.env.DB_CONNECTION_STRING || "",
-      });
-    }
-    await client.query(
+    console.log(lens_assignment);
+
+    maybeReconnect();
+    await client?.query(
       `
         INSERT INTO assignments (title, description, pub_date, due_date, group_id, lens_data) VALUES
         ($1, $2, NOW(), $3, $4, $5)
@@ -90,14 +97,9 @@ app.post("/api/groups/:gid/assignments", async (req, res) => {
 });
 
 app.get("/api/users/:uid/assignments", async (req, res) => {
-  if (!client) {
-    console.log('Base de datos desconectada. Intentando reconectar...');
-    client = new pg.Client({
-      connectionString: process.env.DB_CONNECTION_STRING || "",
-    });
-  }
+  maybeReconnect();
   try {
-    const result = await client.query(
+    const result = await client?.query(
       `
         SELECT a.id, a.title, a.description, a.pub_date, a.due_date, a.lens_data, g.code
         FROM assignments a
@@ -107,6 +109,11 @@ app.get("/api/users/:uid/assignments", async (req, res) => {
         GROUP BY g.code, a.id;
       `, [req.params.uid],
     );
+
+    if (!result?.rows.length) {
+      res.status(404).json([]);
+      return;
+    }
   
     res.json(result.rows.map(row => {
       return {
@@ -125,9 +132,46 @@ app.get("/api/users/:uid/assignments", async (req, res) => {
   }
 });
 
-// app.post("/api/assignments/:aid/submit", async (req, res) => {
+app.post("/api/assignments/:aid/submit", async (req, res) => {
+  const submissionData = req.body.files.map(f => ({
+    path: f.path,
+    content: f.content
+  }))
 
-// });
+  maybeReconnect();
+  try {
+    let assignment = await client?.query(
+      `SELECT lens_data FROM assignments WHERE id = $1`, [req.params.aid]
+    )
+    if (!assignment?.rows.length) {
+      res.status(404).json({ message: "assignment not found" });
+      return;
+    }
+    
+    let assignmentData = JSON.parse(assignment.rows[0].lens_data);
+    
+    const lensResponse = await fetch(`${lens_api_url}/assignments/${assignmentData.id}/submissions`, {
+      method: "POST",
+      body: JSON.stringify({
+        files: submissionData
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    if (lensResponse.status === 400) {
+      res.status(400).json({ message: "Invalid data", error: await lensResponse.json() });
+      return;
+    } else if (lensResponse.status >= 400) {
+      throw new Error(`HTTP error! status: ${lensResponse.status}`);
+    }
+    res.status(200).json(await lensResponse.json());
+    return;
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "internal server error" });
+  }
+});
 
 const port = 8867;
 const server = ViteExpress.listen(app, port, () => {
